@@ -8,28 +8,24 @@ package body Neo.System is
           Set_Number_Of_Tasks(Get_Number_Of_Tasks - 1);
         end Task_Unsafe;
       protected body Protected_Task is
+          function Is_Running return Boolean is begin return Current_Task /= null and not Is_Terminated(Current_Id); exception when others => return False; end Is_Running;
           pragma Warnings(Off); -- Potentially blocking operating in protected type
-          procedure Initialize is
-            begin
-              if Current_Id /= NULL_TASK_ID and then not Is_Terminated(Current_id) then raise Task_Initialized_Without_Being_Finalized; end if;
-              Current_Task := new Task_Unsafe;
-              Current_Task.Initialize(Current_Id);
-              Set_Number_Of_Tasks(Get_Number_Of_Tasks + 1);
-            end Initialize;
-          procedure Finalize is
-            begin
-              if Current_Id = NULL_TASK_ID or else Is_Terminated(Current_id) then raise Task_Finalized_Without_Begin_Initialized; end if;
-              Abort_Task(Current_Id);
-              Current_Id := NULL_TASK_ID;
-              Finalize(Current_Task);
-              Set_Number_Of_Tasks(Get_Number_Of_Tasks - 1);
-            end Finalize;
-          pragma Warnings(On); -- End of disabled warning
-          function Is_Running return Boolean is
-            begin
-              return Current_Task /= null and not Is_Terminated(Current_Id);
-            exception when others => return False;
-            end Is_Running;
+            procedure Initialize is
+              begin
+                if Current_Id /= NULL_TASK_ID and then not Is_Terminated(Current_id) then raise Task_Initialized_Without_Being_Finalized; end if;
+                Current_Task := new Task_Unsafe;
+                Current_Task.Initialize(Current_Id);
+                Set_Number_Of_Tasks(Get_Number_Of_Tasks + 1);
+              end Initialize;
+            procedure Finalize is
+              begin
+                if Current_Id = NULL_TASK_ID or else Is_Terminated(Current_id) then raise Task_Finalized_Without_Begin_Initialized; end if;
+                Abort_Task(Current_Id);
+                Current_Id := NULL_TASK_ID;
+                Finalize(Current_Task);
+                Set_Number_Of_Tasks(Get_Number_Of_Tasks - 1);
+              end Finalize;
+          pragma Warnings(On);
         end Protected_Task;
     end Tasks;
   procedure Assert        (Value : in Integer_4_Signed_C)   is begin Assert(Value /= C_FALSE);                                                                                                                                                  end Assert;
@@ -54,11 +50,9 @@ package body Neo.System is
     end Is_Okay;
   function Is_Supported(Requirements : in Record_Requirements) return Boolean is
     begin
-      return(
-        if SPECIFICS.Version in Enumerated_Linux_System'range        then SPECIFICS.Version >= Requirements.Minimum_Linux
-        elsif SPECIFICS.Version in Enumerated_Windows_System'range   then SPECIFICS.Version >= Requirements.Minimum_Windows
-        elsif SPECIFICS.Version in Enumerated_Macintosh_System'range then SPECIFICS.Version >= Requirements.Minimum_Macintosh
-        else False);
+      return(if SPECIFICS.Version in Enumerated_Linux_System'range     then SPECIFICS.Version >= Requirements.Minimum_Linux
+          elsif SPECIFICS.Version in Enumerated_Windows_System'range   then SPECIFICS.Version >= Requirements.Minimum_Windows
+          elsif SPECIFICS.Version in Enumerated_Macintosh_System'range then SPECIFICS.Version >= Requirements.Minimum_Macintosh else False);
     end Is_Supported;
   procedure Trace is
     Trace   : Tracebacks_Array(1..CALLBACK_TRACE_LIMIT) := (others => NULL_ADDRESS);

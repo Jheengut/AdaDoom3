@@ -38,16 +38,54 @@ package body Neo.System.Graphics is
         New_Line;
       end if;
     end Initialize;
-  procedure Draw is
+  procedure Render_Frame is
+    procedure Deepen(Position : in Cursor) is
+      begin
+        case Key(Position) is
+          when others => null;
+        end case;
+      end Deepen;
+    procedure Light(Position : in Cursor) is
+      begin
+        case Key(Position) is
+          when others => null;
+        end case;
+      end Light;
+    procedure Add_Ambient(Position : in Cursor) is
+      begin
+        case Key(Position) is
+          when others => null;
+        end case;
+      end Add_Ambient;
+    procedure Fog(Position : in Cursor) is
+      begin
+        case Key(Position) is
+          when others => null;
+        end case;
+      end Fog;
     begin
-      if Current_Width /= Width.Get or Current_Height /= Height.Get then null;
+      for Element of Elements loop
+        case Element.Kind is
+          when Text_Element =>
+          when Interface_Element =>
+          when Scene_Element =>
+            for View of Element.Views loop
+              View.Surfaces.Iterate(Deepen);
+              View.Lights.Iterate(Light);
+              View.Surfaces.Iterate(Add_Ambient);
+              View.Lights.Iterate(Fog);
+            end loop;
+        end case;
+      end loop;
+    end Render_Frame;
+      --if Current_Width /= Width.Get or Current_Height /= Height.Get then null;
         --glViewport (0, 0, width, height);
         --glMatrixMode (GL_PROJECTION);
         --glLoadIdentity;
         --gluPerspective (45.0, width/static_cast<GLfloat>(height), 0.1f, 10000.0f);
         --glMatrixMode (GL_MODELVIEW);
         --glLoadIdentity;
-      end if;
+      --end if;
       --Clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
       --MatrixMode(GL_MODELVIEW);
       --LoadIdentity();
@@ -76,7 +114,7 @@ package body Neo.System.Graphics is
       --end loop;
       --glDisable (GL_LIGHTING);
       --glDisable (GL_TEXTURE_2D);
-    end Draw;
+    --end Draw;
 --     procedure Clear(Color : in Record_Color) is
 --       begin
 --         Status.Set_Busy(True);

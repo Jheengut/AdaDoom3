@@ -48,9 +48,8 @@ separate(Neo.File.Model) package body Id_Tech is
     Joint    : Record_Internal_Joint    := (others => <>);
     Shape    : Record_Mesh_Vertex       := (True, others => <>);
     Mesh     : Record_Mesh              := (True, others => <>);
-    package Mesh_Parser is new Parser(Name, "//");
+    package Mesh_Parser is new Parser(Name, "//"); use Mesh_Parser;
     I : Integer := 1;
-    use Mesh_Parser;
     begin
       Assert("MD5Version");  Skip;
       Assert("commandline"); Skip_Set("""", """");

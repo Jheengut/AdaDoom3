@@ -37,7 +37,7 @@ separate(Neo.File.Image) package body TGA is
       Flip_Vertical     at 0 range Byte'size * 17 + 5..Byte'size * 17 + 5;
       Junk              at 0 range Byte'size * 17 + 6..Byte'size * 17 + 7;
     end record;
-  function Load(Path : in String_2) return Array_Record_Graphic is
+  function Load(Path : in String_2) return Record_Graphic is
     Header : Record_Header     := Read(Header);
     Colors : Enumerated_Colors := Enumerated_Colors'val(Header.Bits_Per_Pixel);
     begin
@@ -101,7 +101,7 @@ separate(Neo.File.Image) package body TGA is
         return Graphic;
       end;
     end Load;
-  procedure Save(Path : in String_2; Graphic : in Array_Record_Graphic) is
+  procedure Save(Path : in String_2; Graphic : in Record_Graphic) is
     begin
       raise Unimplemented_Feature;
     end Save;

@@ -1,4 +1,4 @@
-with Neo.System;                   use Neo.System; -- Only needed for SPECIFICS.Separator
+with Neo.System;                   use Neo.System; -- Needed for SPECIFICS.Separator and SPECIFICS.Path
 with Ada.Finalization;             use Ada.Finalization;
 with Ada.Wide_Text_IO;             use Ada.Wide_Text_IO;
 with Ada.Strings.Wide_Unbounded;   use Ada.Strings.Wide_Unbounded;
@@ -9,11 +9,12 @@ package Neo.File is
   function Load       (Name : in String_2) return Array_Stream_Element;
   function Build_Path (Name : in String_2) return String_2;
   generic
-    type Enumerated_Format is (<>);
+    type Enumerated_Format
+    is (<>);
     type Type_To_Handle is private;
   package Handler is
-      Unsupported      : Exception;
       Duplicate_Format : Exception;
+      Unsupported      : Exception;
       generic
         Kind       : Enumerated_Format;
         Save       : access procedure (Name : in String_2; Item : in Type_To_Handle);

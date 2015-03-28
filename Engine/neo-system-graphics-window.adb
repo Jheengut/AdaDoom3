@@ -113,6 +113,7 @@ package body Neo.System.Graphics.Window is
     begin
       Import.Assert_Only_Instance;
       Import.Initialize;
+      Initialize;
       Detect_Menu_Mode_Entry.Bindings.Append(Mouse(Left_Mouse_Key));
       Toggle_Fullscreen.Bindings.Append(Keyboard(F11_Key));
       Exit_To_Menu.Bindings.Append(Keyboard(Escape_Key));
@@ -127,7 +128,6 @@ package body Neo.System.Graphics.Window is
               Width  => Width.Get  + Integer_4_Positive(Border.Right  + Border.Left),
               Height => Height.Get + Integer_4_Positive(Border.Bottom + Border.Top));
         end case;
-        Initialize(1);
         --Previous_State := State.Get;
         --if Is_In_Menu_Mode.Get then
         --  Import.Hide_Mouse(False, False);
@@ -137,6 +137,7 @@ package body Neo.System.Graphics.Window is
         --end if;
         while Current_State = State.Get and Is_Running.Get loop
           if not Import.Update then Is_Running.Set(False); end if;
+          Render_Frame;
           --if Current_Menu /= Is_In_Menu.Get then
           --  if Current_Menu then
           --    Current_Menu := Is_In_Menu.Get;

@@ -17,11 +17,12 @@ package Neo.System.Graphics.Window is
   function Get_Borders           return Vector_Record_Border.Unprotected.Vector;
   function Get_Decoration        return Record_Border;
   function Get_Normalized_Cursor return Record_Location;
-private
   Do_Hide_Mouse      :          Boolean          := True;
   MINIMUM_FACTOR     : constant Integer_8_Signed := 256;
   MULTI_MONITOR_NAME : constant String_2         := " Multi Monitor";
   VARIABLE_PREFIX    : constant String_2         := "w_";
+  package Width                    is new Variable(VARIABLE_PREFIX & "width",      "Render image width",                     Integer_4_Positive, 640);
+  package Height                   is new Variable(VARIABLE_PREFIX & "height",     "Render image height",                    Integer_4_Positive, 480);
   package Is_Iconized              is new Variable(VARIABLE_PREFIX & "minimized",  "Query if minimized",                     Boolean, False, False, False);
   package State                    is new Variable(VARIABLE_PREFIX & "state",      "Window state",                           Enumerated_State, Windowed_State);
   package Gamma_Red                is new Variable(VARIABLE_PREFIX & "red",        "Gamma red correction",                   Integer_4_Natural);
@@ -33,6 +34,7 @@ private
   package Aspect_Wide_Horizontal   is new Variable(VARIABLE_PREFIX & "widehorz",   "Minimum wide horizontal aspect ratio",   Integer_4_Positive, 4);
   package Aspect_Narrow_Vertical   is new Variable(VARIABLE_PREFIX & "narrowvert", "Minimum narrow vertical aspect ratio",   Integer_4_Positive, 9);
   package Aspect_Narrow_Horizontal is new Variable(VARIABLE_PREFIX & "narrowhorz", "Minimum narrow horizontal aspect ratio", Integer_4_Positive, 16);
+private
   type Enumerated_Cursor is (System_Cursor, Active_Cursor, Inactive_Cursor);
   type Enumerated_Change is (Fullscreen_Change, Windowed_Change, Iconic_Change);
   type Enumerated_Resize is (Other_Resize, Left_Resize, Right_Resize, Top_Resize, Bottom_Resize, Top_Left_Resize, Top_Right_Resize, Bottom_Right_Resize, Bottom_Left_Resize);

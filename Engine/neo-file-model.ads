@@ -1,4 +1,3 @@
-with Ada.Finalization;              use Ada.Finalization;
 with Neo.System.Processor.Geometry; use Neo.System.Processor.Geometry;
 package Neo.File.Model is
   type Enumerated_Format is(
@@ -235,7 +234,7 @@ private
   --package Studio_Max_Camera    is new Camera.Format    (Studio_Max_Format,    Studio_Max.Save'access, Studio_Max.Load'access, "3dmax");
   --package Studio_Max_Animation is new Animation.Format (Studio_Max_Format,    Studio_Max.Save'access, Studio_Max.Load'access, "3dmax");
   --package Id_Tech_Map          is new Map.Format       (Id_Technology_Format, Id_Tech.Save'access,    Id_Tech.Load'access,    "md5map");
-  package Id_Tech_Mesh         is new Mesh.Format      (Id_Technology_Format, Id_Tech.Save'access,    Id_Tech.Load'access, "md5mesh");
+  package Id_Tech_Mesh         is new Mesh.Format      (Id_Technology_Format, Id_Tech.Save'access,    Id_Tech.Load'access,    "md5mesh");
   --package Id_Tech_Camera       is new Camera.Format    (Id_Technology_Format, Id_Tech.Save'access,    Id_Tech.Load'access,    "md5camera");
   --package Id_Tech_Animation    is new Animation.Format (Id_Technology_Format, Id_Tech.Save'access,    Id_Tech.Load'access,    "md5anim");
   --package Light_Wave_Mesh      is new Mesh.Format      (Light_Wave_3D_Format, Light_Wave.Save'access, Light_Wave.Load'access, "lwo");

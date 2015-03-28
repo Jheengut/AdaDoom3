@@ -1,12 +1,13 @@
-with Neo.File.Model; use Neo.File.Model;
-package Neo.System.Graphics is -- Essentially a private pag
+with Neo.File.Model;                use Neo.File.Model;
+with Neo.File.Image;                use Neo.File.Image;
+with Neo.System.Processor.Geometry; use Neo.System.Processor.Geometry;
+package Neo.System.Graphics is
   pragma Suppress(Elaboration_Check);
   Stack_Underflow : Exception;
   Stack_Overflow  : Exception;
   Uninitialized   : Exception;
   Out_Of_Memory   : Exception;
   Unsupported     : Exception;
-  Inturrupted     : Exception;
   type Enumerated_API is(
     OpenGL_API,
     -- 1992 Silicon Graphics
@@ -33,12 +34,65 @@ package Neo.System.Graphics is -- Essentially a private pag
     --      http://web.archive.org/web/20130807130424/http://www.opengl.org/registry/doc/GLSLangSpec.4.40.diff.pdf
     Playstation_Shading_Languge);
     -- ???? Sony
-    --      http://web.archive.org/web/20130827033837/http://www.examiner.com/article/here-are-most-of-the-technical-specifications-for-the-playstation-4  
+    --      http://web.archive.org/web/20130827033837/http://www.examiner.com/article/here-are-most-of-the-technical-specifications-for-the-playstation-4
+  type Enumerated_Material_Stage is (Bump_Material, Diffuse_Material, Specular_Material,  Coverage_Material, Ambient_Material, 
+                                     Mirror_Material,  Xray_Material, Cube_Material,    Fog_Light_Material, Blend_Light_Material, Normal_Light_Material);
+  package Vector_String_2_Unbounded is new Vectors(String_2_Unbounded);
+  package Vector_Record_Graphic     is new Vectors(Record_Graphic);
+  package Map_Record_Mesh           is new Maps(Record_Mesh);
+  package Map_Record_Camera         is new Maps(Record_Camera);
+  package Map_Record_Animation      is new Maps(Record_Animation);
+  package Map_Vector_Record_Graphic is new Maps(Vector_Record_Graphic);
+  type Record_Material_Stage is record
+      Scale             : Array_Matrix_2x3   := (others => (others => 0.0));
+      Color             : Record_Pixel       := (others => <>);
+      Opacity_Color     : Float_4_Percent    := 100.0;
+      Opacity_General   : Float_4_Percent    := 100.0;
+      Offset            : Float_4_Real       := 0.0;
+      Frame             : Integer_4_Positive := 1;
+      Frame_Rate        : Integer_4_Natural  := 0; -- Non-animated materials have a zero frame rate
+      Texture           : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
+      Fragment_Program  : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
+      Vertex_Program    : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
+      Fragment_Images   : Vector_String_2_Unbounded.Unprotected.Vector;
+      Vertex_Parameters : Vector_Vertex_Parameter.Unprotected.Vector;
+    end record;
+  package Ordered_Map_Record_Material_Stage                 is new Ordered_Maps(Enumerated_Material_Stage, Record_Material_Stage);
+  package Map_Ordered_Map_Record_Material_Stage_Unprotected is new Maps(Ordered_Map_Record_Material_Stages.Unprotected.Map);
+  type Record_Light is record
+    end record;
+  type Record_View is record
+    end record;
+  type Record_Surface;
+  type Record_Element(Kind : Enumerated_Element := Scene_Element) is record
+      X      : Integer_4_Natural  := 0;
+      Y      : Integer_4_Natural  := 0;
+      Width  : Integer_4_Positive := 640;
+      Height : Integer_4_Positive := 480;
+      case Kind is
+        when Text_Element =>
+          Size    : Integer_4_Positive := 12;
+          Font    : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
+          Text    : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
+          Color   : Record_Color       := (others => <>);
+          Opacity : Float_4_Percent    := 100.0;
+        when Scene_Element =>
+          Surfaces : ; 
+          Lights   : ;
+          Views    : ;
+        when Interface_Element =>
+          Material : Record_Material_Stage := (others => <>);
+      end case;
+    end record;
+  type Record_Surface is record
+      Elements : Vector_Record_Element.Unprotected.Vector;
+      -- 3d data?
+      
+    end record;
   type Record_Specifics is record
       Is_Supported                     : Boolean                     := False;
       Shading_Language                 : Enumerated_Shading_Language := OpenGL_Shading_Language;
       Version                          : Float_4_Real                := 0.0;
-      --Frequency                        : Integer_4_Natural           := 0;
       Maximum_Texture_Size             : Integer_4_Natural           := 0;
       Color_Bits                       : Integer_4_Positive          := 1;
       Depth_Bits                       : Integer_4_Positive          := 1;
@@ -64,56 +118,20 @@ package Neo.System.Graphics is -- Essentially a private pag
       Has_Timer_Query                  : Boolean                     := False;
       Has_Occlusion_Query              : Boolean                     := False;
     end record;
---  procedure Draw;
---     procedure Post_Process;
---     function Is_Drawing  return Boolean; -- If the graphics are drawing no other operations can be done, Inturrupted will be raised
---     function Get_Frame   return Record_Graphic;
-  function Get_Specifics return Record_Specifics;
+  procedure Render_Frame;
   procedure Initialize (Monitor : in Integer_4_Positive);
   procedure Finalize   (Monitor : in Integer_4_Positive);
-private
+  function Get_Specifics return Record_Specifics;
+  Elements   : Vector_Record_Element.Protected_Vector;
+  Textures   : Map_Vector_Record_Graphics_Unprotected.Protected_Map;
+  Materials  : Map_Ordered_Map_Record_Material_Stage_Unprotected.Protected_Map;
   MAXIMUM_CLIP_PLANES                 : constant Integer_4_Positive := 1;
   MAXIMUM_NUMBER_OF_OCCLUSION_QUERIES : constant Integer_4_Positive := 16#0000_1000#;
   VARIABLE_PREFIX                     : constant String_2           := "r_";
-  package Width                      is new Variable(VARIABLE_PREFIX & "width",         "Windowed mode width",                    Integer_4_Positive, 640);
-  package Height                     is new Variable(VARIABLE_PREFIX & "height",        "Windowed mode height",                   Integer_4_Positive, 480);
-  package Antialiasing_Samples       is new Variable(VARIABLE_PREFIX & "multisamples" , "Number of antialiasing samples", Integer_4_Natural, 0);
-  package API                        is new Variable(VARIABLE_PREFIX & "api",           "", Enumerated_API, OpenGL_API);
-  package Warp                       is new Variable(VARIABLE_PREFIX & "warp",          "Use the optical warping renderprog instead of stereoDeGhost", Boolean, False);
-  package Stereo_Warp_Power          is new Variable(VARIABLE_PREFIX & "warppower",     "Amount of pre-distortion", Integer_4_Positive, 145);
-  package Stereo_Warp_X_Center       is new Variable(VARIABLE_PREFIX & "warpcenterz",   "Center for left eye, right eye will be 100", Integer_1_Percent, 50);
-  package Stereo_Warp_Y_Center       is new Variable(VARIABLE_PREFIX & "warpcentery",   "Center for both eyes", Integer_1_Percent, 50);
-  package Stereo_Warp_Z              is new Variable(VARIABLE_PREFIX & "warpz",         "", Integer_4_Positive, 1);
-  package Stereo_Warp_W              is new Variable(VARIABLE_PREFIX & "warpw",         "", Integer_4_Positive, 1);
-  package Stereo_Warp_Fraction       is new Variable(VARIABLE_PREFIX & "warpfraction",  "Fraction of half-width the through-lens view covers", Integer_1_Percent, 100);
-  package Do_Sync_Frames             is new Variable(VARIABLE_PREFIX & "syncframes",    "Don't let the GPU buffer execution past swapbuffers", Boolean, True);
-  package Stereo_3D                  is new Variable(VARIABLE_PREFIX & "stereo3d",      "", Boolean, False);
-  package Polygon_Offset_Factor      is new Variable(VARIABLE_PREFIX & "polyfactor",    "", Boolean, False);
-  package Polygon_Offset_Units       is new Variable(VARIABLE_PREFIX & "polyunits",     "", Boolean, False);
-  package Texture_Anisotropy         is new Variable(VARIABLE_PREFIX & "anisotropy",    "", Boolean, False);
-  package Texture_Detail_Bias        is new Variable(VARIABLE_PREFIX & "bias",          "", Boolean, False);
-  package Texture_Minimum_Filter     is new Variable(VARIABLE_PREFIX & "minfilter",     "", Boolean, False);
-  package Texture_Maximum_Filter     is new Variable(VARIABLE_PREFIX & "maxfilter",     "", Boolean, False);
-  package Texture_MIP_Filter         is new Variable(VARIABLE_PREFIX & "mipfilter",     "", Boolean, False);
-  package Do_State_Cache             is new Variable(VARIABLE_PREFIX & "cache",         "", Boolean, False);
-  package Do_Lazy_Bind_Programs      is new Variable(VARIABLE_PREFIX & "lazyprog",      "", Boolean, False);
-  package Do_Lazy_Bind_Parameters    is new Variable(VARIABLE_PREFIX & "lazyparam",     "", Boolean, False);
-  package Do_Lazy_Bind_Textures      is new Variable(VARIABLE_PREFIX & "lazytex",       "", Boolean, False);
-  package Do_Scissor                 is new Variable(VARIABLE_PREFIX & "scissor",       "", Boolean, False);
-  package Do_Strip_Fragment_Branches is new Variable(VARIABLE_PREFIX & "stripbranches", "Strip fragment branches", Boolean, False);
-  package Do_Skip_Detail_Triangles   is new Variable(VARIABLE_PREFIX & "skipdtri",      "Skip detail triangles", Boolean, False);
-  package Do_Use_Single_Trinagle     is new Variable(VARIABLE_PREFIX & "singletri",     "", Boolean, False);
-  package Stereo_Depth               is new Variable(VARIABLE_PREFIX & "stereodepth",   "", Boolean, False);
-  package Blend                      is new Variable(VARIABLE_PREFIX & "blend",         "", Boolean, False);
-  package Blend_Operation            is new Variable(VARIABLE_PREFIX & "blendop",       "", Boolean, False);
-  package Stencil                    is new Variable(VARIABLE_PREFIX & "stencil",       "", Boolean, False);
-  package Stencil_Operation          is new Variable(VARIABLE_PREFIX & "stencilop",     "", Boolean, False);
-  package Stencil_Function           is new Variable(VARIABLE_PREFIX & "stencilfun",    "", Boolean, False);
-  package Depth                      is new Variable(VARIABLE_PREFIX & "depth",         "", Boolean, False);
-  package Alpha_Test_Function        is new Variable(VARIABLE_PREFIX & "alphatest",     "", Boolean, False);
-  package Mask                       is new Variable(VARIABLE_PREFIX & "mask",          "", Boolean, False);
-  type Enumerated_Condition          is (Always_Condition,            Not_Equal_Condition,          Less_Than_Or_Equal_To_Condition,   Greater_Than_Condition,
-                                         Equal_Condition,             Never_Condition,              Less_Than_Condition,               Greater_Than_Or_Equal_To_Condition);
+  package API           is new Variable(VARIABLE_PREFIX & "api",    "", Enumerated_API, OpenGL_API);
+private
+  type Enumerated_Condition          is (Always_Condition,            Not_Equal_Condition,          Greater_Than_Condition,            Less_Than_Or_Equal_To_Condition,  
+                                         Never_Condition,             Equal_Condition,              Less_Than_Condition,               Greater_Than_Or_Equal_To_Condition);
   type Enumerated_Cull               is (Face_Culling,                Two_Sided_Cull,               Back_Sided_Cull);
   type Enumerated_Stereo             is (No_Stereo,                   Near_Stereo,                  Middle_Stereo,                     Far_Stereo);
   type Enumerated_Stereo_3D          is (No_Stereo_3D,                Side_By_Side_Stereo_3D,       Side_By_Side_Compressed_Stereo_3D, Top_And_Bottom_Compressed_Stereo_3D,
@@ -128,46 +146,44 @@ private
       Reset                 : not null access procedure;
       Initialize            : not null access procedure(Monitor : in Integer_4_Positive);
       Finalize              : not null access procedure(Monitor : in Integer_4_Positive);
---        Upload_Subimage       : not null access procedure
---        Upload_Subimage       : not null access procedure(mipLevel, x, y, z, width, height, const void * pic, int pixelPitch) ;
---        Finalize_Texture      : not null access procedure(Texture : in out Record_Texture) ;
---        Initialize_Texture    : not null access procedure(Texture : in out Record_Texture) ;
---        Render_Headset        : not null access procedure( ;
---        Make_Stereo_Image     : not null access procedure(Graphic : in Record_Graphic) ;
---        Set_Buffer            : not null access procedure(const void *data ) ;
---        Set_Polygon_Offset    : not null access procedure(Do_Enable : in Boolean) ;
---        Set_Polymode_Line     : not null access procedure(;
---        Set_Depth_Mask        : not null access procedure(;
+--      Upload_Subimage       : not null access procedure
+--      Upload_Subimage       : not null access procedure(mipLevel, x, y, z, width, height, const void * pic, int pixelPitch) ;
+--      Finalize_Texture      : not null access procedure(Texture : in out Record_Texture) ;
+--      Initialize_Texture    : not null access procedure(Texture : in out Record_Texture) ;
+--      Render_Headset        : not null access procedure( ;
+--      Make_Stereo_Image     : not null access procedure(Graphic : in Record_Graphic) ;
+--      Set_Buffer            : not null access procedure(const void *data ) ;
+--      Set_Polygon_Offset    : not null access procedure(Do_Enable : in Boolean) ;
+--      Set_Polymode_Line     : not null access procedure(;
+--      Set_Depth_Mask        : not null access procedure(;
       Set_Color_Mask        : not null access procedure(Do_Mask_Red, Do_Mask_Green, Do_Mask_Blue, Do_Mask_Alpha : in Boolean := True);
---        Set_Depth_Function    : not null access procedure(Value : in Enumerated_Depth_Function) ;
---        Set_Stencil_Function  : not null access procedure(Stencil : in Enumerated_Stencil_Function) ;
---        Set_Stencil_Operation : not null access procedure(Fail, Fail_Z, Pass : in Enumerated_Stencil_Operation) ;
---        Set_Stencil           : not null access procedure(Stencil : in Enumerated_Stencil) ;
---        Set_Blend_Operation   : not null access procedure(Blend_Operation : in Enumerated_Blend_Operation) ;
---        Set_Blend             : not null access procedure(Source, Destination : in Enumerated_Blend) ;
---        Set_Stereo_3D         : not null access procedure(Stereo_3D : in Enumerated_Stereo_3D) ;
---        Set_Stereo_Depth      : not null access procedure(Stereo_Depth : in Item_Stereo_Depth.Variable) ;
---        Clear                 : not null access procedure(Color : in Record_Pixel; Stencil_Value : in Integer_1_Unsigned; Do_Clear_Depth : in Boolean := False) is
---        Clear                 : not null access procedure(Stencil_Value : in Integer_1_Unsigned; Do_Clear_Depth : in Boolean := False) ;
---        Clear                 : not null access procedure(Color : in Record_Pixel; Do_Clear_Depth : in Boolean := False) ;
---        Clear                 : not null access procedure(;
---        Color                 : not null access procedure(Color : in Record_Color) ;
---        Color                 : not null access procedure(Pixel : in Record_Pixel) ;
---        Get_Depth_Pass        : not null access procedure(Rectane : in out Record_Rectane) ;
---        Finish_Depth_Pass     : not null access procedure(Rectane : in Record_Rectane) ;
---        Start_Depth_Pass      : not null access procedure(Rectane : in Record_Rectane) ;
---        Depth_Bounds_Test     : not null access procedure(Z_Minimum, Z_Maximum : in Float_4_Real := 0.0) ;
---        Polygon_Offset        : not null access procedure(Scale, Bias : in Float_4_Real) ;
---        View_Port             : not null access procedure(X, Y, Width, Height : in Integer_4_Signed) ;
---        Cull                  : not null access procedure(Kind : in Enumerated_Cull; Is_Mirror : in Boolean := False) ;
---        Check_Exceptions      : not null access procedure(;
+--      Set_Depth_Function    : not null access procedure(Value : in Enumerated_Depth_Function) ;
+--      Set_Stencil_Function  : not null access procedure(Stencil : in Enumerated_Stencil_Function) ;
+--      Set_Stencil_Operation : not null access procedure(Fail, Fail_Z, Pass : in Enumerated_Stencil_Operation) ;
+--      Set_Stencil           : not null access procedure(Stencil : in Enumerated_Stencil) ;
+--      Set_Blend_Operation   : not null access procedure(Blend_Operation : in Enumerated_Blend_Operation) ;
+--      Set_Blend             : not null access procedure(Source, Destination : in Enumerated_Blend) ;
+--      Set_Stereo_3D         : not null access procedure(Stereo_3D : in Enumerated_Stereo_3D) ;
+--      Set_Stereo_Depth      : not null access procedure(Stereo_Depth : in Item_Stereo_Depth.Variable) ;
+--      Clear                 : not null access procedure(Color : in Record_Pixel; Stencil_Value : in Integer_1_Unsigned; Do_Clear_Depth : in Boolean := False) is
+--      Clear                 : not null access procedure(Stencil_Value : in Integer_1_Unsigned; Do_Clear_Depth : in Boolean := False) ;
+--      Clear                 : not null access procedure(Color : in Record_Pixel; Do_Clear_Depth : in Boolean := False) ;
+--      Clear                 : not null access procedure(;
+--      Color                 : not null access procedure(Color : in Record_Color) ;
+--      Color                 : not null access procedure(Pixel : in Record_Pixel) ;
+--      Get_Depth_Pass        : not null access procedure(Rectane : in out Record_Rectane) ;
+--      Finish_Depth_Pass     : not null access procedure(Rectane : in Record_Rectane) ;
+--      Start_Depth_Pass      : not null access procedure(Rectane : in Record_Rectane) ;
+--      Depth_Bounds_Test     : not null access procedure(Z_Minimum, Z_Maximum : in Float_4_Real := 0.0) ;
+--      Polygon_Offset        : not null access procedure(Scale, Bias : in Float_4_Real) ;
+--      View_Port             : not null access procedure(X, Y, Width, Height : in Integer_4_Signed) ;
+--      Cull                  : not null access procedure(Kind : in Enumerated_Cull; Is_Mirror : in Boolean := False) ;
+--      Check_Exceptions      : not null access procedure(;
     end record;
   package GCM      is function Get_Driver return Record_Driver; end GCM;
   package OpenGL   is function Get_Driver return Record_Driver; end OpenGL;
   package Direct3D is function Get_Driver return Record_Driver; end Direct3D;
-  Current_API       : Enumerated_API     := API.Get;
-  Current_Width     : Integer_4_Positive := 1;
-  Current_Height    : Integer_4_Positive := 1;
-  Current_Specifics : Record_Specifics   := (others => <>);
+  Current_API       : Enumerated_API   := API.Get;
+  Current_Specifics : Record_Specifics := (others => <>);
   Drivers           : array(Enumerated_API'range) of Record_Driver := (OpenGL.Get_Driver, Direct3D.Get_Driver, GCM.Get_Driver);
 end Neo.System.Graphics;

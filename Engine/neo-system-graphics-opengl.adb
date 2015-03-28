@@ -1,5 +1,4 @@
 with Neo.OpenGL;              use Neo.OpenGL;
-with Ada.Wide_Text_IO;        use Ada.Wide_Text_IO;
 with Ada.Characters.Handling; use Ada.Characters.Handling;
 separate(Neo.System.Graphics) package body OpenGL is
   package Import is

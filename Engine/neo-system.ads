@@ -64,8 +64,8 @@ package Neo.System is
   function Is_Supported      (Requirements : in Record_Requirements) return Boolean;
   function Is_Okay           (Name, Message : in String_2; Buttons : in Enumerated_Buttons := Okay_Button; Icon : in Enumerated_Icon := No_Icon) return Boolean with pre => Name'length > 0 and Message'length > 0;
   SPECIFICS       : constant Record_Specifics := Get_Specifics;
-  PATH_VARIABLES  : constant String_2         := PATH_SETTINGS & SPECIFICS.Separator & "variables.csv";
   PATH_LOCALS     : constant String_2         := PATH_SETTINGS & SPECIFICS.Separator & "locals.csv";
+  PATH_VARIABLES  : constant String_2         := PATH_SETTINGS & SPECIFICS.Separator & "variables.csv";
   VARIABLE_PREFIX : constant String_2         := "s_";
   package Is_In_Menu is new Variable(VARIABLE_PREFIX & "menu",    "Query cursor captured state",           Boolean, True, False, False);
   package Is_Active  is new Variable(VARIABLE_PREFIX & "active",  "Query activity of main application",    Boolean, False);

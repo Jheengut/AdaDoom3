@@ -166,37 +166,37 @@ separate(Neo.System) package body Import is
       end if;
       return Define_Window_Procedure(Window, Message, Data_Unsigned, Data_Signed);
     end Callback_Window;
-  Window  :         Address             := NULL_ADDRESS;
-  Message : aliased Record_Message      := (others => <>);
-  Class   : aliased Record_Window_Class :=(
-    Callback   => Callback_Window'address,
-    Instance   => Get_Current_Instance,
-    Class_Name => To_Access_Constant_Character_2_C("Dummy"),
-    others     => <>);
-  begin
-    Assert(Register_Class(Class'unchecked_access) /= Integer_2_Unsigned_C(FAILED));
-    Window := Create_Window(
-      Style_Extra => 0,
-      Class_Name  => To_String_2_C("Dummy"),
-      Window_Name => To_String_2_C("Dummy"),
-      Style       => 0,
-      X           => 40,
-      Y           => 40,
-      Width       => 640,
-      Height      => 480,
-      Parent      => NULL_ADDRESS,
-      Menu        => 0,
-      Instance    => Get_Current_Instance,
-      Parameter   => NULL_ADDRESS);
-    Assert(Window);
-    while Peek_Message(
-      Message        => Message'unchecked_access,
-      Window         => Window,
-      Filter_Minimum => IGNORE_MESSAGE_FILTER_MINIMUM,
-      Filter_Maximum => IGNORE_MESSAGE_FILTER_MAXIMUM,
-      Command        => REMOVE_MESSAGES_AFTER_PROCESSING) /= FAILED
-    loop
-      Assert_Dummy(Translate_Message(Message'unchecked_access));
-      Assert_Dummy(Dispatch_Message(Message'unchecked_access));
-    end loop;
-  end Import;
+Window  :         Address             := NULL_ADDRESS;
+Message : aliased Record_Message      := (others => <>);
+Class   : aliased Record_Window_Class :=(
+  Callback   => Callback_Window'address,
+  Instance   => Get_Current_Instance,
+  Class_Name => To_Access_Constant_Character_2_C("Dummy"),
+  others     => <>);
+begin
+  Assert(Register_Class(Class'unchecked_access) /= Integer_2_Unsigned_C(FAILED));
+  Window := Create_Window(
+    Style_Extra => 0,
+    Class_Name  => To_String_2_C("Dummy"),
+    Window_Name => To_String_2_C("Dummy"),
+    Style       => 0,
+    X           => 40,
+    Y           => 40,
+    Width       => 640,
+    Height      => 480,
+    Parent      => NULL_ADDRESS,
+    Menu        => 0,
+    Instance    => Get_Current_Instance,
+    Parameter   => NULL_ADDRESS);
+  Assert(Window);
+  while Peek_Message(
+    Message        => Message'unchecked_access,
+    Window         => Window,
+    Filter_Minimum => IGNORE_MESSAGE_FILTER_MINIMUM,
+    Filter_Maximum => IGNORE_MESSAGE_FILTER_MAXIMUM,
+    Command        => REMOVE_MESSAGES_AFTER_PROCESSING) /= FAILED
+  loop
+    Assert_Dummy(Translate_Message(Message'unchecked_access));
+    Assert_Dummy(Dispatch_Message(Message'unchecked_access));
+  end loop;
+end Import;

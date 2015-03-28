@@ -5,7 +5,7 @@ separate(Neo.System.Graphics.OpenGL) package body Import is
   function Load_Function(Name : in String_1) return Address is begin return OpenGL_Get_Procedure_Address(To_String_1_C(Name));  end Load_Function;
   function Get_Extensions return String_1                   is begin return To_String_1(OpenGL_Get_Extensions(Device_Context)); end Get_Extensions;
   procedure Swap_Buffers                                    is begin Assert(Swap_Buffers(Device_Context));                      end Swap_Buffers;
-  procedure Initialize(Monitor : in Integer_4_Positive) is
+  procedure Initialize is
     Window               :         Address                  := Primary_Window;--Find_Window(To_String_2_C(To_String_2(Neo.System.SPECIFICS.Name)), NULL_STRING_2_C);
     Rendering_Context    :         Address                  := NULL_ADDRESS;
     Specifics            :         Record_Specifics         := (others => <>);
@@ -54,15 +54,11 @@ separate(Neo.System.Graphics.OpenGL) package body Import is
         Assert(OpenGL_Make_Current(Device_Context, Rendering_Context));
       end if;
     end Initialize;
-  procedure Finalize(Monitor : in Integer_4_Positive) is
+  procedure Finalize is
     begin
-      null;
-      --Assert_Dummy(Make_Current);
-      --Assert_Dummy(Make_Current(NULL_ADDRESS, NULL_ADDRESS);
-      --Assert_Dummy(Delete_Rendering_Context);
-      --if Device_Context /= null and then Release_Device_Context = FAILED then
-      --  null;
-      --end if;
-      --GLimp_RestoreGamma();
+      Assert_Dummy(Make_Current(NULL_ADDRESS, NULL_ADDRESS));
+      Assert_Dummy(OpenGL_Delete_Rendering_Context);
+      if Device_Context /= null then Assert(Release_Device_Context) end if;
+      --RestoreGamma(); ?
     end Finalize;
 end Import;

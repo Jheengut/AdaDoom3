@@ -1,13 +1,14 @@
 package body Neo.File is
-  procedure Save(Name : in String_2; Item : in Array_Stream_Element) is
-    begin
-      null;
-    end Save;
+  function Build_Path(Name : in String_2) return String_2 is begin return PATH_ASSETS & SPECIFICS.Separator & Get_Extension(Name) & SPECIFICS.Separator & Name; end Build_Path;
   function Load(Name : in String_2) return Array_Stream_Element is
     Junk : Stream_Element;
     begin
       return (Junk, Junk);
     end Load;
+  procedure Save(Name : in String_2; Item : in Array_Stream_Element) is
+    begin
+      null;
+    end Save;
   function Get_Extension(Name : in String_2) return String_2 is
     Extension_Text : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
     begin
@@ -16,30 +17,17 @@ package body Neo.File is
       end loop;
       raise Unknown;
     end Get_Extension;
-  function Build_Path(Name : in String_2) return String_2 is
-    begin
-      return PATH_ASSETS & SPECIFICS.Separator & Get_Extension(Name) & SPECIFICS.Separator & Name;
-    end Build_Path;
   package body Handler is
       package body Format is
+          procedure Finalize(Item : in out Record_Controller) is begin Formats.Delete(Kind); end Finalize;
           procedure Initialize(Item : in out Record_Controller) is
             begin
               if Formats.Has_Element(Kind) then raise Duplicate_Format; end if;
               Formats.Insert(Kind, (Save, Load, To_String_2_Unbounded(To_Lower(Extensions))));
             end Initialize;
-          procedure Finalize(Item : in out Record_Controller) is
-            begin
-              Formats.Delete(Kind);
-            end Finalize;
         end Format;
-      procedure Save(Name : in String_2; Item : in Type_To_Handle) is
-        begin
-          Formats.Element(Match_Extension(Name)).Save(Build_Path(Name), Item);
-        end Save;
-      function Load(Name : in String_2) return Type_To_Handle is
-        begin
-          return Formats.Element(Match_Extension(Name)).Load(Build_Path(Name));
-        end Load;
+      procedure Save (Name : in String_2; Item : in Type_To_Handle) is begin        Formats.Element(Match_Extension(Name)).Save(Build_Path(Name), Item); end Save;
+      function Load  (Name : in String_2) return Type_To_Handle     is begin return Formats.Element(Match_Extension(Name)).Load(Build_Path(Name));       end Load;
       function Match_Extension(Value : in String_2) return Enumerated_Format is
         Current_Format : Ordered_Map_Record_Format.Cursor := Formats.First;
         Format         : Record_Format                    := (others => <>);
@@ -57,11 +45,7 @@ package body Neo.File is
   package body Parser is
       function At_End return Boolean is begin return (if Row > Data.Last_Index then True else False); end At_End;
       procedure Skip_Set(Starting, Ending : in String_2) is Junk : String_2_Unbounded := Next_Set(Starting, Ending); begin null; end Skip_Set;
-      procedure Skip(Number_To_Skip : in Integer_4_Positive := 1) is
-        Junk : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
-        begin
-          for I in 1..Number_To_Skip loop Junk := Next; end loop;
-        end Skip;
+      procedure Skip(Number_To_Skip : in Integer_4_Positive := 1) is Junk : String_2_Unbounded := NULL_STRING_2_UNBOUNDED; begin for I in 1..Number_To_Skip loop Junk := Next; end loop; end Skip;
       procedure Assert(Text : in String_2) is
         begin
           if Index(Slice(Data.Element(Row), Column, Length(Data.Element(Row))), Text) /= Column then raise Invalid; end if;
@@ -87,8 +71,7 @@ package body Neo.File is
                 Row    := Row + 1;
                 exit;
               end if;
-              if Index(Slice(Data.Element(Row), Column, Length(Data.Element(Row))), Separator) /= Column then return;
-              --if Length(Data.Element(Row)) - Column > Separator'length and then Slice(Data.Element(Row), Column, Column + Separator'length) = Separator then return;
+              if Index(Slice(Data.Element(Row), Column, Length(Data.Element(Row))), Separator) /= Column then return; --if Length(Data.Element(Row)) - Column > Separator'length and then Slice(Data.Element(Row), Column, Column + Separator'length) = Separator then return;
               elsif not Do_Ignore_Multiple then
                 Column := Column + Separator'length;
                 return;
@@ -119,7 +102,7 @@ package body Neo.File is
                   exit when Found_Digit or Found_Sign;
                   Found_Sign := True;                    
                 when '.' =>
-                  exit when Found_Decimal;
+                  if Found_Decimal then raise Invalid; end if;
                   Found_Digit   := True;
                   Found_Decimal := True;
                 when others => exit;

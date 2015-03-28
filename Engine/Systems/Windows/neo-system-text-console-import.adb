@@ -104,9 +104,9 @@ separate(Neo.System.Text.Console) package body Import is
       Border_Height : Integer_4_Signed_C := Get_System_Metrics(DATA_BORDER_HEIGHT);
       Border_Width  : Integer_4_Signed_C := Get_System_Metrics(DATA_BORDER_WIDTH);
       begin
+        Box_Padding       := Integer_4_Signed_C(Float(Text_Box_Font_Width) / 1.5);
         Margin_Group      := Integer_4_Signed_C(Float(Text_Metric.Height) / GROUP_BOX_SIDE_MARGIN);
         Margin_Group_Top  := Integer_4_Signed_C(Float(Text_Metric.Height) * FONT_GROUP_BOX_SIZE);
-        Box_Padding       := Integer_4_Signed_C(Float(Text_Box_Font_Width) / 1.5);
         Output_Box_Width  := 2 * Box_Padding + (Text_Box_Font_Width  * Integer_4_Signed_C(Get_Line_Size)) + Get_System_Metrics(DATA_SCROLL_BAR_WIDTH);
         Output_Box_Height := 2 * Box_Padding + (Text_Box_Font_Height * Integer_4_Signed_C(NUMBER_OF_OUTPUT_ROWS));
         Input_Box_Height  := 2 * Box_Padding + Text_Box_Font_Height;

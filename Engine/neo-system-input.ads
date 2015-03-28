@@ -193,8 +193,6 @@ package Neo.System.Input is
   --package Bind   is new Action("bind",   Perform_Bind);
   --package Unbind is new Action("unbind", Perform_Unbind);
 private
-  COMMAND_UNBIND                  : constant String_2 := "unbind";
-  COMMAND_BIND                    : constant String_2 := "bind";
   COMMAND_HELP                    : constant String_2 := "Below is an example call, player# and device are optional";
   COMMAND_EXAMPLE                 : constant String_2 := "player# impulse device value";
   NO_SUCH_IMPULSE                 : constant String_2 := "No such impulse!";

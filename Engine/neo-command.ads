@@ -3,6 +3,7 @@ with Ada.Finalization;             use Ada.Finalization;
 with Ada.Strings.Wide_Fixed;       use Ada.Strings.Wide_Fixed;
 with Ada.Characters.Handling;      use Ada.Characters.Handling;
 with Ada.Wide_Characters.Handling; use Ada.Wide_Characters.Handling;
+--with Neo.File.Sheet;               use Neo.File.Sheet; -- Needed for loading saved variables
 package Neo.Command is
   package Vector_String_2_Unbounded is new Vectors(String_2_Unbounded);
   Duplicate : Exception;
