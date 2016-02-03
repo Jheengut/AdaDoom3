@@ -57,15 +57,15 @@ package Neo.File.Image is
     -- 2012 ARM
     --      (NON-ARCHIVED) http://paper.ustor.cn/read/a_i%3D516a503bc624e810046edbac/
   type Enumerated_Rotation is (Clockwise_90_Rotation, Clockwise_180_Rotation, Clockwise_270_Rotation);
-  type Enumerated_Colors   is (Monochrome_Colors, Eight_Colors, Sixteen_Colors, Two_Hundred_Fifty_Six_Per_Colors, Two_Hundred_Fifty_Six_With_Alpha_Per_Colors); for Enumerated_Colors use (1, 4, 8, 15, 16, 24, 32);
+  type Enumerated_Colors   is (Monochrome_Colors, Eight_Colors, Sixteen_Colors, Two_Hundred_Fifty_Six_Per_Colors, Two_Hundred_Fifty_Six_With_Alpha_Per_Colors); for Enumerated_Colors use (1, 8, 16, 256, 512);
   type Record_Pixel is record
       Color : Record_Color       := (others => <>);
       Alpha : Integer_1_Unsigned := Byte'last;
     end record;
   type Array_Record_Pixel  is array(Positive range <>, Positive range <>)  of Record_Pixel;
-  type Record_Graphic(Format : Enumerated_Format := Graphics_Interchange_Format; Width, Height : Integer_4_Positive) is record
-      Pixels : Array_Record_Pixel(1..Width, 1..Height) := (others => <>);
-      Colors : Enumerated_Colors                       := Alpha_With_Two_Hundred_Fifty_Six_Per_Colors;
+  type Record_Graphic(Format : Enumerated_Format := Truevision_Graphics_Adapter_Format; Width, Height : Integer_4_Positive := 1) is record
+      Pixels : Array_Record_Pixel(1..Width, 1..Height) := (others => (others => <>));
+      Colors : Enumerated_Colors                       := Two_Hundred_Fifty_Six_With_Alpha_Per_Colors;
       case Format is
         --when Graphics_Interchange_Format =>
         --  Until_Next : Day_Duration := 0.0;

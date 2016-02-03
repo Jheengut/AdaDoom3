@@ -39,44 +39,45 @@ package body Neo.System.Graphics is
       end if;
     end Initialize;
   procedure Render_Frame is
-    procedure Deepen(Position : in Cursor) is
-      begin
-        case Key(Position) is
-          when others => null;
-        end case;
-      end Deepen;
-    procedure Light(Position : in Cursor) is
-      begin
-        case Key(Position) is
-          when others => null;
-        end case;
-      end Light;
-    procedure Add_Ambient(Position : in Cursor) is
-      begin
-        case Key(Position) is
-          when others => null;
-        end case;
-      end Add_Ambient;
-    procedure Fog(Position : in Cursor) is
-      begin
-        case Key(Position) is
-          when others => null;
-        end case;
-      end Fog;
+--    procedure Bump(Position : in Cursor) is
+--      begin
+--        case Key(Position) is
+--          when others => null;
+--        end case;
+--      end Bump;
+--    procedure Light(Position : in Cursor) is
+--      begin
+--        case Key(Position) is
+--          when others => null;
+--        end case;
+--      end Light;
+--    procedure Add_Ambient(Position : in Cursor) is
+--      begin
+--        case Key(Position) is
+--          when others => null;
+--        end case;
+--      end Add_Ambient;
+--    procedure Fog(Position : in Cursor) is
+--      begin
+--        case Key(Position) is
+--          when others => null;
+--        end case;
+--      end Fog;
     begin
-      for Element of Elements loop
-        case Element.Kind is
-          when Text_Element =>
-          when Interface_Element =>
-          when Scene_Element =>
-            for View of Element.Views loop
-              View.Surfaces.Iterate(Deepen);
-              View.Lights.Iterate(Light);
-              View.Surfaces.Iterate(Add_Ambient);
-              View.Lights.Iterate(Fog);
-            end loop;
-        end case;
-      end loop;
+      null;
+--      for Element of Elements loop
+--        case Element.Kind is
+--          when Text_Element => null;
+--          when Interface_Element => null;
+--          when Scene_Element =>
+--            for View of Element.Views loop
+--              View.Surfaces.Iterate(Deepen);
+--              View.Lights.Iterate(Light);
+--              View.Surfaces.Iterate(Add_Ambient);
+--              View.Lights.Iterate(Fog);
+--            end loop;
+--        end case;
+--      end loop;
     end Render_Frame;
       --if Current_Width /= Width.Get or Current_Height /= Height.Get then null;
         --glViewport (0, 0, width, height);

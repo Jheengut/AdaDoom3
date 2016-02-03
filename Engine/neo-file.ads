@@ -9,8 +9,7 @@ package Neo.File is
   function Load       (Name : in String_2) return Array_Stream_Element;
   function Build_Path (Name : in String_2) return String_2;
   generic
-    type Enumerated_Format
-    is (<>);
+    type Enumerated_Format is (<>);
     type Type_To_Handle is private;
   package Handler is
       Duplicate_Format : Exception;
@@ -40,11 +39,13 @@ package Neo.File is
       Formats : Ordered_Map_Record_Format.Protected_Map;
     end Handler;
   generic
-    Path               : String_2;
-    Comment            : String_2 := NULL_STRING_2;
-    Separator          : String_2 := " ";
-    Do_Convert_Tabs    : Boolean  := True;
-    Do_Ignore_Multiple : Boolean  := True;
+    Path                : String_2;
+    Comment_Single_Line : String_2 := "//";
+    Comment_Prefix      : String_2 := "/*";
+    Comment_Postfix     : String_2 := "*/";
+    Separator           : String_2 := " ";
+    Do_Convert_Tabs     : Boolean  := True;
+    Do_Ignore_Multiple  : Boolean  := True;
   package Parser is -- Task unsafe
       Invalid : Exception;
       function At_End      return Boolean;

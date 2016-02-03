@@ -4,7 +4,7 @@ package body Neo.System.Text.Console is
   procedure Initialize               is begin Main_Task.Initialize;                                                                                          end Initialize;
   procedure Finalize                 is begin Main_Task.Finalize;                                                                                            end Finalize;
   procedure Run                      is begin Import.Run;                        exception when Call_Failure => Put_Debug_Line(Localize(FAILED_INITIALIZE)); end Run;
-  procedure Send_Log                 is begin Open_Webpage(ERROR_REPORTING_URL); exception when others => Put_Debug_Line(Localize(FAILED_SEND_LOG));         end Send_Log;
+  procedure Send_Log                 is begin Open_Webpage(ERROR_REPORTING_URL); exception when others       => Put_Debug_Line(Localize(FAILED_SEND_LOG));   end Send_Log;
   procedure Save_Log is
     File        : File_Type;
     File_Stream : Stream_Access;

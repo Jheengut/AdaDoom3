@@ -44,8 +44,8 @@ package body Neo.File is
     end Handler;
   package body Parser is
       function At_End return Boolean is begin return (if Row > Data.Last_Index then True else False); end At_End;
-      procedure Skip_Set(Starting, Ending : in String_2) is Junk : String_2_Unbounded := Next_Set(Starting, Ending); begin null; end Skip_Set;
-      procedure Skip(Number_To_Skip : in Integer_4_Positive := 1) is Junk : String_2_Unbounded := NULL_STRING_2_UNBOUNDED; begin for I in 1..Number_To_Skip loop Junk := Next; end loop; end Skip;
+      procedure Skip     (Number_To_Skip : in Integer_4_Positive := 1) is Junk : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;    begin for I in 1..Number_To_Skip loop Junk := Next; end loop; end Skip;
+      procedure Skip_Set (Starting, Ending : in String_2)              is Junk : String_2_Unbounded := Next_Set(Starting, Ending); begin null; end Skip_Set;
       procedure Assert(Text : in String_2) is
         begin
           if Index(Slice(Data.Element(Row), Column, Length(Data.Element(Row))), Text) /= Column then raise Invalid; end if;

@@ -35,16 +35,17 @@ package Neo.System.Graphics is
     Playstation_Shading_Languge);
     -- ???? Sony
     --      http://web.archive.org/web/20130827033837/http://www.examiner.com/article/here-are-most-of-the-technical-specifications-for-the-playstation-4
-  type Enumerated_Material_Stage is (Bump_Material, Diffuse_Material, Specular_Material,  Coverage_Material, Ambient_Material, 
-                                     Mirror_Material,  Xray_Material, Cube_Material,    Fog_Light_Material, Blend_Light_Material, Normal_Light_Material);
+  type Enumerated_Material is (Bump_Material,   Diffuse_Material, Specular_Material,  Coverage_Material, Ambient_Material, 
+                               Mirror_Material, Xray_Material,    Cube_Material);
+  type Enumerated_Light    is (Fog_Light,       Blend_Light,      Normal_Light);
   package Vector_String_2_Unbounded is new Vectors(String_2_Unbounded);
   package Vector_Record_Graphic     is new Vectors(Record_Graphic);
-  package Map_Record_Mesh           is new Maps(Record_Mesh);
-  package Map_Record_Camera         is new Maps(Record_Camera);
-  package Map_Record_Animation      is new Maps(Record_Animation);
-  package Map_Vector_Record_Graphic is new Maps(Vector_Record_Graphic);
-  type Record_Material_Stage is record
-      Scale             : Array_Matrix_2x3   := (others => (others => 0.0));
+  package Map_Record_Mesh           is new Hashed_Maps(Record_Mesh);
+  --package Map_Record_Camera         is new Hashed_Maps(Record_Camera);
+  package Map_Record_Animation      is new Hashed_Maps(Record_Animation);
+  --package Map_Vector_Record_Graphic is new Hashed_Maps(Vector_Record_Graphic);
+  type Record_Material is record
+--      Scale             : Array_Matrix_2x3   := (others => (others => 0.0));
       Color             : Record_Pixel       := (others => <>);
       Opacity_Color     : Float_4_Percent    := 100.0;
       Opacity_General   : Float_4_Percent    := 100.0;
@@ -55,49 +56,60 @@ package Neo.System.Graphics is
       Fragment_Program  : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
       Vertex_Program    : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
       Fragment_Images   : Vector_String_2_Unbounded.Unprotected.Vector;
-      Vertex_Parameters : Vector_Vertex_Parameter.Unprotected.Vector;
+--      Vertex_Parameters : Vector_Vertex_Parameter.Unprotected.Vector;
     end record;
-  package Ordered_Map_Record_Material_Stage                 is new Ordered_Maps(Enumerated_Material_Stage, Record_Material_Stage);
-  package Map_Ordered_Map_Record_Material_Stage_Unprotected is new Maps(Ordered_Map_Record_Material_Stages.Unprotected.Map);
+--  package Ordered_Map_Record_Material_Stage                 is new Ordered_Maps(Enumerated_Material_Stage, Record_Material);
+--  package Map_Ordered_Map_Record_Material_Stage_Unprotected is new Hashed_Maps(Ordered_Map_Record_Material_Stages.Unprotected.Map);
   type Record_Light is record
+      Axis   : Array_Record_Coordinate_3D(1..3) := (others => (others => <>));
+      Origin : Record_Coordinate_3D             := (others => <>);
+      -- Frustum definitions for project lights - should have real plane equations here though...
+      Target : Record_Coordinate_3D             := (others => <>);
+      Right  : Record_Coordinate_3D             := (others => <>);
+      Up     : Record_Coordinate_3D             := (others => <>);
+      Start  : Record_Coordinate_3D             := (others => <>);
+      Ending : Record_Coordinate_3D             := (others => <>);
     end record;
   type Record_View is record
+      Field_Of_View : Record_Coordinate_2D_Degree := (others => <>);
+      Origin        : Record_Coordinate_3D        := (others => <>);
+      Axis          : Record_Coordinate_3D        := (others => <>);
+      Time          : Duration                    := 0.0;
     end record;
-  type Record_Surface;
-  type Record_Element(Kind : Enumerated_Element := Scene_Element) is record
-      X      : Integer_4_Natural  := 0;
-      Y      : Integer_4_Natural  := 0;
-      Width  : Integer_4_Positive := 640;
-      Height : Integer_4_Positive := 480;
-      case Kind is
-        when Text_Element =>
-          Size    : Integer_4_Positive := 12;
-          Font    : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
-          Text    : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
-          Color   : Record_Color       := (others => <>);
-          Opacity : Float_4_Percent    := 100.0;
-        when Scene_Element =>
-          Surfaces : ; 
-          Lights   : ;
-          Views    : ;
-        when Interface_Element =>
-          Material : Record_Material_Stage := (others => <>);
-      end case;
-    end record;
-  type Record_Surface is record
-      Elements : Vector_Record_Element.Unprotected.Vector;
-      -- 3d data?
-      
-    end record;
+--  type Record_Texture is new Controlled with record
+--      Is_Compressed : Boolean := False;
+--      case Is_Compressed is
+--        when True => 
+--    end record;
+--  type Record_Element(Kind : Enumerated_Element := Scene_Element) is record
+--      X      : Integer_4_Natural  := 0;
+--      Y      : Integer_4_Natural  := 0;
+--      Width  : Integer_4_Positive := 640;
+--      Height : Integer_4_Positive := 480;
+--      case Kind is
+--        when Text_Element =>
+--          Size    : Integer_4_Positive := 12;
+--          Font    : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
+--          Text    : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
+--          Color   : Record_Color       := (others => <>);
+--          Opacity : Float_4_Percent    := 100.0;
+--        when Scene_Element => null;
+--          --Surfaces : ; 
+--          --Lights   : ;
+--          --Views    : ;
+--        when Interface_Element =>
+--          Material : Record_Material := (others => <>);
+--      end case;
+--    end record;
   type Record_Specifics is record
       Is_Supported                     : Boolean                     := False;
       Shading_Language                 : Enumerated_Shading_Language := OpenGL_Shading_Language;
       Version                          : Float_4_Real                := 0.0;
-      Maximum_Texture_Size             : Integer_4_Natural           := 0;
       Color_Bits                       : Integer_4_Positive          := 1;
       Depth_Bits                       : Integer_4_Positive          := 1;
       Stencil_Bits                     : Integer_4_Positive          := 1;
       Bits_Per_Pixel                   : Integer_4_Positive          := 1;
+      Maximum_Texture_Size             : Integer_4_Natural           := 0;
       Multisamples                     : Integer_4_Natural           := 0;
       Has_Stereo_Pixel_Format          : Boolean                     := False;
       Has_Multitexture                 : Boolean                     := False;
@@ -122,9 +134,9 @@ package Neo.System.Graphics is
   procedure Initialize (Monitor : in Integer_4_Positive);
   procedure Finalize   (Monitor : in Integer_4_Positive);
   function Get_Specifics return Record_Specifics;
-  Elements   : Vector_Record_Element.Protected_Vector;
-  Textures   : Map_Vector_Record_Graphics_Unprotected.Protected_Map;
-  Materials  : Map_Ordered_Map_Record_Material_Stage_Unprotected.Protected_Map;
+--  Elements  : Vector_Record_Element.Protected_Vector;
+--  Textures  : Map_Vector_Record_Graphics_Unprotected.Protected_Map;
+--  Materials : Map_Ordered_Map_Record_Material_Stage_Unprotected.Protected_Map;
   MAXIMUM_CLIP_PLANES                 : constant Integer_4_Positive := 1;
   MAXIMUM_NUMBER_OF_OCCLUSION_QUERIES : constant Integer_4_Positive := 16#0000_1000#;
   VARIABLE_PREFIX                     : constant String_2           := "r_";

@@ -1,0 +1,210 @@
+package Neo.Game is
+  type Enumerated_Entity is(
+
+  type Record_Entity(Kind : Enumerated_Entity := ) is record
+      Targets  : Vector_String_2_Unbounded;
+      Origin   : Record_Coordinate := NULL_RECORD_COORDINATE;
+      Rotation : Record_Rotation   := NULL_RECORD_ROTATION;
+      Angle    :
+      Wait     : := ;
+      case Kind is
+        when
+          --"delay"      "1.3"
+          --"enemy"      "sentry_leader"
+          --"s_maxdistance"      "10"
+          --"s_mindistance"      "3"
+          --"s_volume"     "6"
+          --"close"      "close_section_5"
+          --"hide"     "2"
+          --"run"      "0"
+          --"frame"      "199"
+          --"anim"     "idle"
+          --"blend_in"     "8"
+          --"blend_out"      "8"
+          --"angle"      "270"
+          --"focus"      "player1"
+          --"no_talk"      "1"
+          --"skip"     "1"
+          --"cinematic"      "1"
+          --"classname"      "path_waitfortrigger"
+          --"name"     "campbellwait1"
+          --"no_cower"     "1"
+          --"section"      "2"
+          --"noflood"      "1"
+          --"no_turn"      "1"
+          --"open"     "open_section_5"
+          --"origin"     "688 -592 32"
+          --"target"     "campbellanim1"
+          --"target1"      "path_corner_65"
+          --"trigger"      "invasion_wallskull_relay"
+          --"wait"     "1"
+          --"run"      "0"
+        when Light_Entity =>
+          "_color"     "0.427451 0.443137 0.486275"
+          "angle"      "0"
+          "bind"     "mre_env_swinglight_long_wbulbs_fixed_1"
+          "bindToBone"     "bone5"
+          "bindToJoint"      "bone5"
+          "bindtojoint"      "head"
+          "break"      "1"
+          "broken"     "models/mapobjects/swinglights/swinglight_long_wbulbs_bulb_broken.ase"
+          "cinematic"      "1"
+          "classname"      "light"
+          "color_demonic"      "0 0 0"
+          "count"      "1"
+          "damage"     "damage_lightBreak"
+          "demonic"      "1"
+          "falloff"      "0"
+          "falloffTexture"     "lights/squarelight1a"
+          "frame"      "52"
+          "gui"      "guis/screens/malfunction2a.gui"
+          "health"     "1"
+          "hide"     "1"
+          "hideModelOnBreak"     "1"
+          "levels"     "2"
+          "light"      "150"
+          "light_center"     "68 78 44"
+          "light_end"      "0 4 -44"
+          "light_origin"     "1760 372 84"
+          "light_radius"     "46 22 71"
+          "light_right"      "-140 0 0"
+          "light_rotation"     "1 0 0 0 1 0 0 0 1"
+          "light_start"      "0 1 -11"
+          "light_target"     "0 0 -148"
+          "light_up"     "0 -152 0"
+          "mat_demonic"      "lights/square_flicker2"
+          "model"      "light_5520"
+          "name"     "light_5538"
+          "nodiffuse"      "0"
+          "noflood"      "1"
+          "noshadows"      "0"
+          "nospecular"     "0"
+          "not_easy"     "1"
+          "on_activate"      "death1_getup"
+          "origin"     "-832 560 104"
+          "parallel"     "1"
+          "random"     "0.000000"
+          "rotation"     "0.642788 0.766044 0 -0.766044 0.642788 0 0 0 1"
+          "s_diversity"      "0.001"
+          "s_global"     "1"
+          "s_justVolue"      "0"
+          "s_justVolume"     "1"
+          "s_leadthrough"      "0.100000"
+          "s_looping"      "0"
+          "s_maxdistance"      "10.000000"
+          "s_mindistance"      "1.000000"
+          "s_occlusion"      "1"
+          "s_omni"     "0"
+          "s_plain"      "0"
+          "s_shader"     "light_neon_buzz_04"
+          "s_shakes"     "0.000000"
+          "s_sync"     "1"
+          "s_unclamped"      "0"
+          "s_volume"     "-50.000000"
+          "s_waitfortrigger"     "0"
+          "saved_color"      "0.48 0.65 0.75"
+          "shaderParm3"      "0.2"
+          "shaderParm4"      "-12"
+          "shaderParm7"      "1"
+          "shaderparm"     "0.62"
+          "shaderparm3"      "2"
+          "shaderparm4"      "-8"
+          "shaderparm7"      "1"
+          "shadows"      "0"
+          "skin"     "skins/elevator_cop"
+          "snd_close"      "sound/ed/doors/_door_silver_sliding/sliding_door_close_test1a.wav"
+          "snd_open"     "sound/ed/doors/_door_silver_sliding/sliding_door_open_test1a.wav"
+          "solid"      "0"
+          "soundgroup"     ""
+          "spawnclass"     "idLight"
+          "start_off"      "1"
+          "target"     "func_fx_18"
+          "target1"      "tim_trigger_count_1"
+          "target2"      "tim_light_3721"
+          "target3"      "mal_trigger_count_1"
+          "target4"      "mal_trigger_count_1"
+          "target7"      "invasion_skull2_speclight"
+          "texture"      "lights/round_sin"
+          "wait"     "0.000000"
+        when Sound_Entity =>
+          Sound_Shaders       : Vector_String_2_Unbounded;                     -- snd_shaderX
+          Sound_Demonic       : String_2_Unbounded := NULL_STRING_2_UNBOUNDED; -- snd_demonic
+          Sound_Group         : String_2_Unbounded := NULL_STRING_2_UNBOUNDED; -- soundgroup
+          Volume              : Float_4_Percent    := 0.0;                     -- s_volume
+          Maximum_Distance    : Float_4_Real       := 0.0;                     -- s_maxdistance
+          Minimum_Distance    : Float_4_Real       := 0.0;                     -- s_mindistance
+          Lead_Through        : Float_4_Real       := 0.0;                     -- s_leadthrough
+          Is_Plain            : Boolean            := False;                   -- s_plain
+          Is_On_Demand        : Boolean            := False;                   -- s_ondemand
+          Is_Omnidirectional  : Boolean            := False;                   -- s_omni
+          Do_Wait_For_Trigger : Boolean            := False;                   -- s_waitfortrigger
+          Do_Sync             : Boolean            := False;                   -- s_sync
+          Do_Clamp            : Boolean            := False;                   -- s_unclamped
+          Do_Loop             : Boolean            := False;                   -- s_looping
+          Do_Start_On         : Boolean            := False;                   -- start_off, start_on
+          Is_Just_Volume      : Boolean            := False;                   -- s_justVolume
+          Wait_Varience       : Float_4_
+
+
+          --"angle"      "269.697876"
+          --"bind"     "archiver1_arm"
+          --"bindToJoint"      "shirt_back_lo"
+          --"cinematic"      "1"
+          --"classname"      "speaker"
+          --"color_demonic"      "1 0 0"
+          --"cranewarning_2"     "sound/VO/alphalabs2/cranegame_danger.wav"
+          --"cranewarning_3"     "sound/VO/alphalabs2/cranegame_danger.wav"
+          --"frame"      "1"
+          --"gui"      "guis/movies/mfs.gui"
+          --"klaxxon1_status"      "0"
+          --"klaxxon2_status"      "0"
+          --"klaxxon3_status"      "0"
+          --"model"      ""
+          --"name"     "speaker_264"
+          --"noflood"      "1"
+          --"not_easy"     "1"
+          --"origin"     "-504 1464 112"
+          --"overlayDemonic"     "1"
+          --"random"     "0.000000"
+          --"rotation"     "1 0 0 0 1 0 0 0 1"
+          --"s_diversity"      "0.1"
+          --"s_global"     "1"
+          --"s_justVolue"      "0"
+          --"s_justVolume"     "1"
+          --"s_leadthrough"      "0.100000"
+          --"s_looping"      "0"
+          --"s_maxdistance"      "30.000000"
+          --"s_mindistance"      "5.000000"
+          --"s_occlusion"      "0"
+          --"s_omni"     "1"
+          --"s_ondemand"     "1"
+          --"s_plain"      "0"
+          --"s_shader"     "sound/VO/admin/comp_access_denied.wav"
+          --"s_shader1"      "stone_movement_loop"
+          --"s_shader2"      "stone_movement_end"
+          --"s_shake"      "1"
+          --"s_shakes"     "0.000000"
+          --"s_sync"     "1"
+          --"s_unclamped"      "0"
+          --"s_volume"     "0.000000"
+          --"s_waitfortrigger"     "1"
+          --"snd_demonic"      "whispers_02"
+          --"snd_shader"     "sound/xian/seq_suspense/alphalabs1_endsuspense_loop1.wav"
+          --"snd_shader1"      "sound/xian/seq_suspense/alphalabs1_endsuspense_loop2.wav"
+          --"snd_shader2"      "sound/xian/seq_suspense/alphalabs1_endsuspense_loop3.wav"
+          --"snd_shader3"      "sound/xian/seq_suspense/alphalabs1_endsuspense_end.wav"
+          --"soundgroup"     ""
+          --"start_off"      "1"
+          --"start_on"     "1"
+          --"target"     "hhs_8"
+          --"trigger"      "1"
+          --"wait"     "0.000000"
+      end case;
+    end record;
+  generic
+    procedure Assert     (Text : in String_2);
+    function Peek        return String_2_Unbounded;
+    function Next        return String_2_Unbounded;
+    function Next_Number return Float_8_Real;
+  procedure Parse_Entity return Record_Entity;
+end Neo.Game;

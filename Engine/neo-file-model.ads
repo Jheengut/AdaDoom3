@@ -98,18 +98,18 @@ package Neo.File.Model is
   --     Obstacle_Clip);
   --   end record;
   -- package Vector_Record_Side
-  -- type Record_Level_Brush is record
-  --     Bounds : Record_Bounds := (others => <>);
-  --     Sides  : Vetor_Record_Side.Unprotected.Vector;
-  --   end record;
+--  type Record_Level_Brush is record
+--      Bounds : Record_Bounds := (others => <>);
+--      Sides  : Vetor_Record_Side.Unprotected.Vector;
+--    end record;
   -- package Vector_Record_Level_Brush is Vectors(Record_Level_Brush);
   -- package Vector_Vector_Record_Level_Brush_Unprotected is Vectors(Vector_Record_Level_Brush.Unprotected.Vector);
-  -- type Record_Level_Surface is record
-  --     Material : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
-  --     Bounds   : Record_Bounds      := (others => <>);
-  --     Plane    : Record_Plane       := (others => <>);
-  --     Edges    : Vector_Integer_4_Natural.Unprotected.Vector;
-  --   end record;
+--  type Record_Level_Surface is record
+--      Material : String_2_Unbounded := NULL_STRING_2_UNBOUNDED;
+--      Bounds   : Record_Bounds      := (others => <>);
+--      Plane    : Record_Plane       := (others => <>);
+--      Edges    : Vector_Integer_4_Natural.Unprotected.Vector;
+--    end record;
   -- package Vector_Record_Level_Surface is new Vectors(Record_Level_Surface);
   -- package Vector_Vector_Record_Level_Surface_Unprotected is new Vectors(Vector_Record_Level_Surface.Unprotected.Vector);
   -- type Record_Level_Patch is record

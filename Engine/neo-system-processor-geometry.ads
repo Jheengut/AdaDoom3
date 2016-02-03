@@ -4,6 +4,10 @@ with Ada.Numerics.Generic_Complex_Arrays;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Numerics.Generic_Complex_Elementary_Functions;
 package Neo.System.Processor.Geometry is
+  type Record_Coordinate_2D_Degree is record
+      X : Float_8_Degree := 0.0;
+      Y : Float_8_Degree := 0.0;
+    end record;
   type Record_Coordinate_2D is record
       X : Float_8_Real := 0.0;
       Y : Float_8_Real := 0.0;

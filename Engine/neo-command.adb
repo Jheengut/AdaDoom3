@@ -16,9 +16,7 @@ package body Neo.Command is
         end Set;
       procedure Initialize(Controller : in out Record_Controller) is
         begin
-          if Actions.Has_Element(LOWER_NAME) or else (Variables.Element(LOWER_NAME).Set /= null or Variables.Element(LOWER_NAME).Get /= null) then
-            raise Duplicate;
-          end if;
+          if Actions.Has_Element(LOWER_NAME) or else (Variables.Element(LOWER_NAME).Set /= null or Variables.Element(LOWER_NAME).Get /= null) then raise Duplicate; end if;
           Handle_Set(To_String_2(Variables.Element(LOWER_NAME).Saved_Value));
           Variables.Replace(LOWER_NAME, (Variables.Element(LOWER_NAME).Saved_Value, Handle_Get'unrestricted_access, Handle_Set'unrestricted_access));
         exception
@@ -35,9 +33,7 @@ package body Neo.Command is
           Set(Type_To_Vary'wide_value(Value));
         exception when Constraint_Error =>
           for I in Type_To_Vary'range loop
-            if Value = Type_To_Vary'wide_image(I) then
-              Set(I);
-              exit;
+            if Value = Type_To_Vary'wide_image(I) then Set(I); exit;
             elsif I = Type_To_Vary'last then
               Put_Line(Localize(INCORRECT_PARAMETER) & LOWER_NAME & ": " & Value);
               Put_Line(Handle_Get);
@@ -47,13 +43,8 @@ package body Neo.Command is
       function Handle_Get return String_2 is
         Values : String_2_Unbounded := To_String_2_Unbounded(Trim(Type_To_Vary'wide_image(Type_To_Vary'first), Both));
         begin
-          if Type_To_Vary'pos(Type_To_Vary'last) - Type_To_Vary'pos(Type_To_Vary'first) > MAXIMUM_POSSIBLE_VALUES_DISPLAYED then
-            Values := Values & ".." & Trim(Type_To_Vary'wide_image(Type_To_Vary'last), Both);
-          else
-            for I in Type_To_Vary'val(Type_To_Vary'pos(Type_To_Vary'first) + 1)..Type_To_Vary'last loop
-              Values := Values & ", " & To_String_2_Unbounded(Trim(Type_To_Vary'wide_image(I), Both));
-            end loop;
-          end if;
+          if Type_To_Vary'pos(Type_To_Vary'last) - Type_To_Vary'pos(Type_To_Vary'first) > MAXIMUM_POSSIBLE_VALUES_DISPLAYED then Values := Values & ".." & Trim(Type_To_Vary'wide_image(Type_To_Vary'last), Both);
+          else for I in Type_To_Vary'val(Type_To_Vary'pos(Type_To_Vary'first) + 1)..Type_To_Vary'last loop Values := Values & ", " & To_String_2_Unbounded(Trim(Type_To_Vary'wide_image(I), Both)); end loop; end if;
           return Localize(Description)                                                     & END_LINE_2 &
                  Localize(CURRENT_VALUE)   & Trim(Type_To_Vary'wide_image(Data.Get), Both) & END_LINE_2 &
                  Localize(POSSIBLE_VALUES) & To_String_2(Values);
